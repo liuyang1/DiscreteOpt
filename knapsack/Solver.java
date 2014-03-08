@@ -66,15 +66,16 @@ public class Solver {
           weights[i-1] = Integer.parseInt(parts[1]);
         }
 
-        // a trivial greedy algorithm for filling the knapsack
-        // it takes items in-order until the knapsack is full
         int value = 0;
         int weight = 0;
+        int thresh = 0;
         int[] taken = new int[items];
 
         int[] tbl = new int[capacity+1];
         for(int i=0; i < items; i++){
-            for(int j=capacity; j >= weights[i]; j--){
+            if (thresh!=capacity)
+                thresh = min(thresh + weights[i], capacity);
+            for(int j=thresh; j >= weights[i]; j--){
                 int t = tbl[j-weights[i]] + values[i];
                 if(weights[i]<=j && t > tbl[j]){
                     tbl[j] = t;

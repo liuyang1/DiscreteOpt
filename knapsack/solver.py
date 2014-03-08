@@ -27,7 +27,7 @@ def backtrace(tbl, item):
 def dynProgramming(items, capacity):
     tbl = [0 for i in xrange(capacity + 1)]
     taken = [0] * len(items)
-    for i in xrange(1, len(items)):
+    for i in xrange(0, len(items)):
         for j in reversed(xrange(capacity+1)):
             if j-items[i].weight < 0:
                 break
