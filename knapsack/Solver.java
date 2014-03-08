@@ -72,27 +72,11 @@ public class Solver {
         int weight = 0;
         int[] taken = new int[items];
 
-        /*
-        for(int i=0; i < items; i++){
-            if(weight + weights[i] <= capacity){
-                taken[i] = 1;
-                value += values[i];
-                weight += weights[i];
-            } else {
-                taken[i] = 0;
-            }
-        }
-        */
-
         int[] tbl = new int[capacity+1];
-        for(int i=1; i < items; i++){
-            for(int j=capacity; j >= 0; j--){
-                int t;
-                if(j < weights[i])
-                    t = tbl[capacity+j-weights[i]] + values[i];
-                else
-                    t = tbl[j-weights[i]] + values[i];
-                if( weights[i]<=j && t > tbl[j]){
+        for(int i=0; i < items; i++){
+            for(int j=capacity; j >= weights[i]; j--){
+                int t = tbl[j-weights[i]] + values[i];
+                if(weights[i]<=j && t > tbl[j]){
                     tbl[j] = t;
                 }
             }
