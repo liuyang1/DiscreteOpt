@@ -71,18 +71,33 @@ def isUp(lst):
             return False
     return True
 
+def statDegree(edges):
+    from collections import Counter
+    cnt = Counter()
+    for i in edges:
+        cnt.update(i)
+    return cnt
+
+def filterDegree(clqLst, degreeCnt, maxClqN):
+    def isGtDegree(clq):
+        return all(degreeCnt[i] >= maxClqN for i in clq)
+    return filter(isGtDegree, clqLst)
+
 
 def clique(edges):
+    degreeCnt = statDegree(edges)
     clqLst = edges
     maxClqN = 2
     while 1:
+        l0 = len(clqLst)
+        clqLst = filterDegree(clqLst, degreeCnt, maxClqN + 1)
+        print "filter...", 1 - len(clqLst) / (l0 + 0.0)
+        print maxClqN, " to check ", len(clqLst)
         clqLst = mergeclique(clqLst)
-        # print clqLst
         if len(clqLst) == 0:
             break
         maxClqN += 1
-        print maxClqN
-        if len(clqLst) < len(clqLst[0]) + 1:
+        if len(clqLst) == 0 or len(clqLst) < len(clqLst[0]) + 1:
             break
     print "final: ",maxClqN
     return maxClqN
