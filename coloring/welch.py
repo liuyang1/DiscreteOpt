@@ -8,13 +8,7 @@ def statDegree(edges):
     return cnt
 
 def isLink(newnode, nodeset, edges):
-    for n in nodeset:
-        for e in edges:
-            if e[0] is newnode and e[1] is n:
-                return True
-            if e[0] is n and e[1] is newnode:
-                return True
-    return False
+    return any((newnode, n) in edges for n in nodeset) or any((n, newnode) in edges for n in nodeset)
 
 
 def welchPowll(edges):

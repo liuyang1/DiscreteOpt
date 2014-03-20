@@ -110,7 +110,8 @@ def solve_it(input_data):
     # solution = coloring(edges)
 
     # prepare the solution in the specified output format
-    output_data = str(node_count) + ' ' + str(0) + '\n'
+    # output_data = str(node_count) + ' ' + str(0) + '\n'
+    output_data = str(max(solution)+1) + ' ' + str(0) + '\n'
     output_data += ' '.join(map(str, solution))
 
     return output_data
