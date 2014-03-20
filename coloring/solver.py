@@ -104,8 +104,10 @@ def solve_it(input_data):
 
     # build a trivial solution
     # every node has its own color
-    solution = range(0, node_count)
-    solution = coloring(edges)
+    # solution = range(0, node_count)
+    import welch
+    solution = welch.welchPowll(edges)
+    # solution = coloring(edges)
 
     # prepare the solution in the specified output format
     output_data = str(node_count) + ' ' + str(0) + '\n'
