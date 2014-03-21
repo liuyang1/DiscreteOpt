@@ -11,7 +11,7 @@ def isLink(newnode, nodeset, edges):
     return any((newnode, n) in edges for n in nodeset) or any((n, newnode) in edges for n in nodeset)
 
 
-def welchPowll(edges):
+def solve_it(edges):
     degree = statDegree(edges)
     nodeN = len(degree.keys())
     colors = {}

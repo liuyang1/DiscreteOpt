@@ -9,10 +9,19 @@ def addEdges(g, edges):
     return g
 
 
-def plotEdges(edges):
+def plotEdges(edges, iscolor=False):
     G = nx.Graph()
     G = addEdges(G, edges)
-    nx.draw(G)
+    if iscolor:
+        import welch
+        ret = welch.solve_it(edges)
+        print zip(range(len(ret)), ret)
+        m = max(ret) + 0.0
+        val = [i/m for i in ret]
+        val_map = zip(range(len(ret)), val)
+        nx.draw(G, cmap = plt.get_cmap('jet'), node_color = val)
+    else:
+        nx.draw(G)
     plt.show()
 
 
@@ -29,4 +38,4 @@ if __name__ == "__main__":
     f = open(sys.argv[1])
     edges = loadEdges(f)
     f.close()
-    plotEdges(edges)
+    plotEdges(edges, True)

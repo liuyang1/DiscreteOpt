@@ -106,7 +106,7 @@ def solve_it(input_data):
     # every node has its own color
     # solution = range(0, node_count)
     import welch
-    solution = welch.welchPowll(edges)
+    solution = welch.solve_it(edges)
     # solution = coloring(edges)
 
     # prepare the solution in the specified output format
