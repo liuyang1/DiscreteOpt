@@ -25,7 +25,9 @@ def solve_it(input_data):
 
     # build a trivial solution
     # visit the nodes in the order they appear in the file
-    solution = range(0, nodeCount)
+    import tsp
+    solution = tsp.tsp(points)
+    # solution = range(0, nodeCount)
 
     # calculate the length of the tour
     obj = length(points[solution[-1]], points[solution[0]])
