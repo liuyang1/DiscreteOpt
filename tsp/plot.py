@@ -14,6 +14,13 @@ def plotPath(points, path):
     plt.plot(pair[0], pair[1], label="$end$", color="blue", linewidth=3)
 
 
+def plotLines(points, line):
+    for idx0, idx1 in line:
+        pair = (points[idx0], points[idx1])
+        pair = zip(*pair)
+        plt.plot(pair[0], pair[1], color="blue")
+
+
 def plotPoints(points):
     points = zip(*points)
     plt.scatter(points[0], points[1])
