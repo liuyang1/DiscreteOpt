@@ -51,4 +51,38 @@ def greedyDfs2(pts):
         pathlst.append(path)
     return min(pathlst, key=lambda x: distPath(mat, x))
 
+def connect(lines, pt):
+    l0 = [x for x, y in lines if y == pt]
+    l1 = [y for x, y in lines if x == pt]
+    return l0 + l1
+
+
+def preorderWalk(tree, root=None):
+    if root == None:
+        root = tree[0][0]
+    lst = []
+    queue = [root]
+    passed = []
+    while 1:
+        try:
+            n = queue.pop()
+        except:
+            break
+        passed.append(n)
+        l = connect(tree, n)
+        nl = [i for i in l if i not in passed]
+        queue.extend(nl)
+    return passed
+
+
+def approxTSP(pts):
+# 实现了构建最小生成树,然后得到近似解的算法,但是结果太差了.
+# 还不如贪心算法的结果
+    lines = mst(pts)
+    ptlist = [preorderWalk(lines, r) for r in xrange(len(pts))]
+    mat = distMat(pts)
+    pt = min(ptlist, key=lambda x: distPath(mat, x))
+    return pt
+
+
 tsp = greedyDfs2
