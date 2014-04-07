@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 #! -*-encoding=utf8 -*-
 import math
+import multiprocessing
+
+import geo
+import plot
 
 
 def distance(pt0, pt1):
@@ -34,22 +38,54 @@ def mst(pts):
     return p
 
 
+def deCrossMutation(pts, mat, path):
+    def deCross(path):
+        shift = path[1:] + path[:1]
+        pairlist = zip(*(path, shift))
+        for i,(pt0, pt1) in enumerate(pairlist):
+            print "decross processing ", i
+            for j,(pt2, pt3) in enumerate(pairlist):
+                if abs(i-j) <= 1:
+                    continue
+                if pt0 == pt2 or pt0 == pt3 or pt1 == pt2 or pt1 == pt3:
+                    continue
+                if geo.isCross(pts[pt0], pts[pt1], pts[pt2], pts[pt3]):
+        #            print "decross ", pt0, pt1, pt2, pt3
+                    newpath = path[0:i+1] + path[j:i:-1] + path[j+1:]
+                    return True, newpath
+        return False, path
+    while 1:
+        flag, path = deCross(path)
+        if flag == False:
+            return path
+
 def greedyDfs2(pts):
+    def redraw(p, path):
+        if p != None:
+            p.terminate()
+        p = multiprocessing.Process(target=plot.plotThread, args=(pts, path))
+        p.start()
     mat = distMat(pts)
-    pathlst = []
+    p, mv, mp = None, None, None
     for begin in xrange(len(pts)):
         path = [begin]
         while(len(path) < len(pts)):
+            print "greedy processing ", len(path)
             start = path[-1]
             end = path[0]
             totest = [x for x in xrange(len(pts)) if x not in path]
-            if 2 * len(path) < len(pts):
+            if len(path) / (len(pts)+0.0) < 0.7:
                 m = min(totest, key=lambda x: mat[x][start])
             else:
                 m = min(totest, key=lambda x: mat[x][start] - mat[x][end])
             path.append(m)
-        pathlst.append(path)
-    return min(pathlst, key=lambda x: distPath(mat, x))
+        path = deCrossMutation(pts, mat, path)
+        v = distPath(mat, path)
+        if mv == None or mv > v:
+            mv, mp = v, path
+            redraw(p, path)
+        print begin, v, mv
+    return mp
 
 def connect(lines, pt):
     l0 = [x for x, y in lines if y == pt]
@@ -83,6 +119,28 @@ def approxTSP(pts):
     mat = distMat(pts)
     pt = min(ptlist, key=lambda x: distPath(mat, x))
     return pt
+
+
+def allPerm(pts):
+    import itertools
+    path = range(1, len(pts))
+    m = 100000000
+    mat = distMat(pts)
+    for i in itertools.permutations(path):
+        p = list(i) + [0]
+        # v = distPath(mat, p)
+        v = 0
+        shift = p[1:] + p[:1]
+        pairlist = zip(*(p, shift))
+        for x in pairlist:
+            v += mat[x[0]][x[1]]
+            if v > m:
+                v = m + 1
+                break
+        if v < m:
+            m, ret = v, p
+            print m, ret
+    return ret
 
 
 tsp = greedyDfs2

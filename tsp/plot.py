@@ -22,6 +22,9 @@ def plotLines(points, line):
 
 
 def plotPoints(points):
+    for i, p in enumerate(points):
+        print i, p
+        plt.text(p[0], p[1], str(i))
     points = zip(*points)
     plt.scatter(points[0], points[1])
 
@@ -33,6 +36,11 @@ def loadPoints(f):
         p = [float(i) for i in line.split()]
         points.append((p[0], p[1]))
     return points
+
+
+def plotThread(points, path):
+    plotPath(points, path)
+    plt.show()
 
 
 if __name__ == "__main__":
