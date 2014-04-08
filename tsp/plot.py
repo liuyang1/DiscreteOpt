@@ -23,8 +23,7 @@ def plotLines(points, line):
 
 def plotPoints(points):
     for i, p in enumerate(points):
-        print i, p
-        plt.text(p[0], p[1], str(i))
+        plt.text(p[0], p[1], str(i), fontsize=10)
     points = zip(*points)
     plt.scatter(points[0], points[1])
 
@@ -39,6 +38,7 @@ def loadPoints(f):
 
 
 def plotThread(points, path):
+    plotPoints(points)
     plotPath(points, path)
     plt.show()
 
@@ -54,5 +54,3 @@ if __name__ == "__main__":
         obj += tsp.distance(points[path[index]], points[path[index + 1]])
     print obj
     print path
-    plotPath(points, path)
-    plt.show()

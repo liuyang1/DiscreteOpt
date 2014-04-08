@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 #! -*-encoding=utf8 -*-
 import math
+import random
 import multiprocessing
 
 import geo
@@ -43,14 +44,15 @@ def deCrossMutation(pts, mat, path):
         shift = path[1:] + path[:1]
         pairlist = zip(*(path, shift))
         for i,(pt0, pt1) in enumerate(pairlist):
-            print "decross processing ", i
             for j,(pt2, pt3) in enumerate(pairlist):
                 if abs(i-j) <= 1:
                     continue
                 if pt0 == pt2 or pt0 == pt3 or pt1 == pt2 or pt1 == pt3:
                     continue
                 if geo.isCross(pts[pt0], pts[pt1], pts[pt2], pts[pt3]):
-        #            print "decross ", pt0, pt1, pt2, pt3
+                    l0 = mat[pt0][pt1] + mat[pt2][pt3]
+                    l1 = mat[pt0][pt3] + mat[pt1][pt2]
+                    # print "decross ", pt0, pt1, pt2, pt3, l0 - l1
                     newpath = path[0:i+1] + path[j:i:-1] + path[j+1:]
                     return True, newpath
         return False, path
@@ -59,18 +61,21 @@ def deCrossMutation(pts, mat, path):
         if flag == False:
             return path
 
+
+def redraw(p, pts, path):
+    if p != None:
+        p.terminate()
+    p = multiprocessing.Process(target=plot.plotThread, args=(pts, path))
+    p.start()
+    return p
+
+
 def greedyDfs2(pts):
-    def redraw(p, path):
-        if p != None:
-            p.terminate()
-        p = multiprocessing.Process(target=plot.plotThread, args=(pts, path))
-        p.start()
     mat = distMat(pts)
     p, mv, mp = None, None, None
     for begin in xrange(len(pts)):
         path = [begin]
         while(len(path) < len(pts)):
-            print "greedy processing ", len(path)
             start = path[-1]
             end = path[0]
             totest = [x for x in xrange(len(pts)) if x not in path]
@@ -83,7 +88,7 @@ def greedyDfs2(pts):
         v = distPath(mat, path)
         if mv == None or mv > v:
             mv, mp = v, path
-            redraw(p, path)
+            p = redraw(p, pts, path)
         print begin, v, mv
     return mp
 
@@ -141,6 +146,22 @@ def allPerm(pts):
             m, ret = v, p
             print m, ret
     return ret
+
+
+def randDeCross(pts):
+    mat = distMat(pts)
+    path = range(len(pts))
+    p = None
+    mv, mp = None, None
+    for i in xrange(100):
+        random.shuffle(path)
+        path = deCrossMutation(pts, mat, path)
+        v = distPath(mat, path)
+        if mv == None or v < mv:
+            mv, mp = v, path
+            print i, mv
+            p = redraw(p, pts, path)
+    return mp
 
 
 tsp = greedyDfs2
